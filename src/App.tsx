@@ -3,7 +3,7 @@
 import yipToLogo from './assets/yiptoyellow.png';
 import './App.css'
 import { TypeAnimation } from 'react-type-animation';
-import { redirect, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import {useEffect} from "react";
 const names = ['fred', 'paul', 'mike']
 const domains = ['yips.to', 'meows.to', 'barks.to', 'wantsto.link', 'wantsyouto.click']
@@ -21,8 +21,8 @@ function App() {
         const currentHost = window.location.hostname
 
         if (!allowedDomains.includes(currentHost) && (location.pathname.length <= 1)) {
-            // Redirect only in prod if domain is not allowed
-            redirect(`https://yip.to${location.pathname}${location.search}`)
+            console.log("redirecting", location.pathname, location.search)
+            window.location.href = `https://yip.to${location.pathname}${location.search}`
         }
     }, [location.pathname, location.search])
 
@@ -41,16 +41,16 @@ function App() {
                 <a href="https://yip.to" target="_blank">
                     <img src={yipToLogo} className="logo" alt="yip.to logo" />
                 </a>
-            </div>
 
+            </div>
             <h1>
 
                 <TypeAnimation
-                sequence={getSequence(names, 10000)}
-                cursor={false}
-                repeat={Infinity}
-                style={{color: "#eb5858"}}
-                className={"silkscreen-regular"}
+                    sequence={getSequence(names, 10000)}
+                    cursor={false}
+                    repeat={Infinity}
+                    style={{color: "#eb5858"}}
+                    className={"silkscreen-regular"}
                 /><span className={"silkscreen-regular"}>.</span>
                 <TypeAnimation
                     sequence={getSequence(domains, 7500)}
@@ -73,7 +73,7 @@ function App() {
 
         {/*    footer saying made with love by Pencil Fox Studios */}
             <footer className={"silkscreen-regular"}>
-                &copy; 2025 <a style={{color: "#ff7a26", textDecoration: "none"}} href={"https://pnfx.dev"}>Pencil Fox Studios</a>. All rights reserved.
+                &copy; 2025 <a style={{color: "#ff7a26", textDecoration: "none"}} href={"https://pnfx.dev"}>Pencil Fox Studios</a>. All rights reserved. {import.meta.env.MODE === 'development'?<strong style={{color: "pink"}}>DEVELOPMENT MODE IS CURRENTLY ACTIVE.</strong>:<></>}
             </footer>
 
         </>
