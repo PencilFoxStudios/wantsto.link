@@ -9,7 +9,7 @@ const names = ['fred', 'paul', 'mike']
 const domains = ['yips.to', 'meows.to', 'barks.to', 'wantsto.link', 'wantsyouto.click']
 const slugs = ['discord', 'bluesky', 'youtube']
 
-const allowedDomains = ["https://yip.to", "https://www.yip.to"]
+const allowedDomains = ["https://yip.to", "https://www.yip.to", "yip.to", "www.yip.to"]
 
 function App() {
     // redirect to main app URL if not currently there and not on dev environment
