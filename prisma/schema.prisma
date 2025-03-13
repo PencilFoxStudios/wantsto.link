@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,51 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  username  String     @unique         // used for subdomain (e.g., shack.yips.to)
+  createdAt DateTime   @default(now())
+
+  domainId  String?
+  domain    Domains?    @relation(fields: [domainId], references: [id])
+
+  shortLinks ShortLinks[]
+}
+
+model Domains {
+  id         String      @id @default(uuid())
+  name       String      @unique         // e.g., wantsto.link, meows.to
+  createdAt  DateTime    @default(now())
+
+  users      Users[]
+  shortLinks ShortLinks[]
+}
+
+model ShortLinks {
+  id           String     @id @default(uuid())
+  slug         String                       // e.g., /discord, /github
+  destination  String                       // full URL
+  createdAt    DateTime   @default(now())
+
+  userId       String
+  domainId     String
+
+  user         Users       @relation(fields: [userId], references: [id])
+  domain       Domains     @relation(fields: [domainId], references: [id])
+  clicks       Clicks[]
+
+  @@unique([slug, userId, domainId])  // prevent duplicate slugs for same user+domain
+}
+
+model Clicks {
+  id           String     @id @default(uuid())
+  shortLinkId  String
+  timestamp    DateTime   @default(now())
+  ip           String?
+  referrer     String?
+  userAgent    String?
+  shortLink    ShortLinks  @relation(fields: [shortLinkId], references: [id])
 }
