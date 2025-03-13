@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+import yipToLogo from './assets/yiptoyellow.png'
 import './App.css'
+import { TypeAnimation } from 'react-type-animation';
+
+const names = ['fred', 'paul', 'mike']
+const domains = ['yips.to', 'meows.to', 'barks.to', 'wantsto.link', 'wantsyouto.click']
+const slugs = ['discord', 'bluesky', 'youtube']
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    function getSequence(arr: string[], delay:number = 1000): (string|number)[] {
+        const seq = [];
+        for (const item of arr) {
+            seq.push(item)
+            seq.push(delay);
+        }
+        return seq;
+    }
+
+    return (
+        <>
+            <div>
+                <a href="https://yip.to" target="_blank">
+                    <img src={yipToLogo} className="logo" alt="yip.to logo" />
+                </a>
+            </div>
+
+            <h1>
+
+                <TypeAnimation
+                sequence={getSequence(names, 10000)}
+                cursor={false}
+                repeat={Infinity}
+                style={{color: "#eb5858"}}
+                className={"silkscreen-regular"}
+                /><span className={"silkscreen-regular"}>.</span>
+                <TypeAnimation
+                    sequence={getSequence(domains, 7500)}
+                    cursor={false}
+                    repeat={Infinity}
+                    style={{color: "#23a55a"}}
+                    className={"silkscreen-regular"}
+                /><span className={"silkscreen-regular"}>/</span>
+                <TypeAnimation
+                    sequence={getSequence(slugs, 3000)}
+                    cursor={false}
+                    repeat={Infinity}
+                    style={{color: "#56a8f5"}}
+                    className={"silkscreen-regular"}
+                />
+
+            </h1>
+            <h2 className={"silkscreen-regular"}>a branded url shortener for the modern era</h2>
+            <p className={"silkscreen-bold"}>coming soon</p>
+
+        {/*    footer saying made with love by Pencil Fox Studios */}
+            <footer className={"silkscreen-regular"}>
+                &copy; 2025 <a style={{color: "#ff7a26", textDecoration: "none"}} href={"https://pnfx.dev"}>Pencil Fox Studios</a>. All rights reserved.
+            </footer>
+
+        </>
+    )
 }
 
 export default App
