@@ -1,5 +1,6 @@
 
-import yipToLogo from './assets/yiptoyellow.png'
+
+import yipToLogo from './assets/yiptoyellow.png';
 import './App.css'
 import { TypeAnimation } from 'react-type-animation';
 
