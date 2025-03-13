@@ -1,46 +1,56 @@
-import { Handler } from '@netlify/functions'
-import { PrismaClient } from '@prisma/client'
+import {Handler} from '@netlify/functions'
+import {PrismaClient} from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const handler: Handler = async (event) => {
-    const path = event.path || '/'
-    const slug = path.split('/').pop()
+const handler: Handler = async (event, context) => {
+    // Extract the host header. That's how we're gonna find out who's asking for what.
+    const host = event.headers.host || ''
+    // Extract subdomain and root domain from host
+    const [subname, rootname, tld] = host.split(".")
+    // Extract slug from path
+    const path = event.path // e.g., "/discord"
+    const slug = path.replace(/^\/+/, '')
 
-    try {
-        const shortLink = await prisma.shortLink.findUnique({
-            where: { slug: slug || '' },
-        })
-
-        if (!shortLink) {
-            return {
-                statusCode: 404,
-                body: 'Shortlink not found',
-            }
+    // Look up domain and user from host
+    const domainEntry = await prisma.domains.findUnique({
+        where: {
+          name: rootname + "." + tld
         }
+    });
 
-        // Optional: log click
-        await prisma.click.create({
-            data: {
-                shortLinkId: shortLink.id,
-                ip: event.headers['client-ip'] || '',
-                referrer: event.headers.referer || '',
-                userAgent: event.headers['user-agent'] || '',
-            },
-        })
+    if(!domainEntry){
+      return {
+        statusCode: 404,
+        body: 'Domain not registered.',
+      }
+    }
 
-        return {
-            statusCode: 302,
-            headers: {
-                Location: shortLink.destination,
-            },
-            body: '',
+    const shortLinkEntry = await prisma.shortLinks.findUnique({
+        where: {
+          slug: slug,
+          domainId: domainEntry.id,
+          user: {
+            username: subname
+          }
         }
-    } catch (err: any) {
-        console.error(err)
-        return {
-            statusCode: 500,
-            body: 'Error resolving shortlink',
-        }
+    })
+
+    if(!shortLinkEntry){
+      return {
+        statusCode: 404,
+        body: 'This short link does not exist under this user!',
+      }
+    }
+
+    // redirect to URL
+    return {
+      statusCode: 301,
+      headers: {
+        "Location": shortLinkEntry.destination
+      }
+
     }
 }
+
+export {handler}
