@@ -3,12 +3,28 @@
 import yipToLogo from './assets/yiptoyellow.png';
 import './App.css'
 import { TypeAnimation } from 'react-type-animation';
-
+import { redirect, useLocation } from "react-router";
+import {useEffect} from "react";
 const names = ['fred', 'paul', 'mike']
 const domains = ['yips.to', 'meows.to', 'barks.to', 'wantsto.link', 'wantsyouto.click']
 const slugs = ['discord', 'bluesky', 'youtube']
 
+const allowedDomains = ["https://yip.to", "https://www.yip.to"]
+
 function App() {
+    // redirect to main app URL if not currently there and not on dev environment
+    const location = useLocation()
+
+    useEffect(() => {
+        const isDev = import.meta.env.MODE === 'development'
+        if(isDev) return console.log("Development environment detected!", location.pathname, location.search);
+        const currentHost = window.location.hostname
+
+        if (!allowedDomains.includes(currentHost) && (location.pathname.length <= 1)) {
+            // Redirect only in prod if domain is not allowed
+            redirect(`https://yip.to${location.pathname}${location.search}`)
+        }
+    }, [location.pathname, location.search])
 
     function getSequence(arr: string[], delay:number = 1000): (string|number)[] {
         const seq = [];

@@ -5,6 +5,7 @@
     "jsx": "react-jsx",
     "moduleResolution": "Node",
     "strict": true,
+    "types": [ "vite/client"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
